@@ -7,7 +7,7 @@
   <title>LifeON | Wear It. Live It.</title>
   <style>
     /* =====================================================================
-       PASS 3 — BRAND EXPERIENCE
+       PASS 3: BRAND EXPERIENCE
        Type-led, mobile-first, one accent (yellow) on bone + ink.
        System fonts stand in (the file must not load web fonts):
          display grotesk = Segoe UI (weights 800/900) -> app: Bricolage Grotesque / Archivo
@@ -210,6 +210,22 @@
     .ticker-group span { font-weight: 900; letter-spacing: -.03em; text-transform: uppercase; font-size: clamp(1.4rem, 3.6vw, 2.4rem); line-height: 1; }
     .ticker-group i { display: inline-block; width: .55em; height: .55em; background: var(--yellow); border-radius: 2px; transform: rotate(45deg); }
     @keyframes ticker { to { transform: translateX(-50%); } }
+
+    /* ---------- What is LifeON ---------- */
+    .lifeon { background: var(--bg-2); padding: clamp(3rem, 7vw, 6rem) 0; }
+    .lifeon-grid { display: grid; gap: 2rem; }
+    @media (min-width: 900px) { .lifeon-grid { grid-template-columns: 5fr 7fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; } }
+    .lifeon-title { font-size: clamp(2rem, 4.6vw, 3.6rem); line-height: 1.05; max-width: 14ch; }
+    .lifeon-title .brand-inline { font-family: var(--sans); font-style: normal; }
+    @media (min-width: 900px) { .lifeon-title { position: sticky; top: calc(var(--bar) + 2rem); } }
+    .lifeon-body p { font-size: clamp(1.05rem, 1.4vw, 1.25rem); line-height: 1.6; color: var(--ink-2); max-width: 36rem; }
+    .lifeon-body p .mark { color: var(--ink); }
+    .lifeon-body .lifeon-carries { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; margin: 1.75rem 0 .75rem; }
+    .lifeon-triplet { list-style: none; padding: 0; margin: 0 0 1.75rem; display: grid; gap: .5rem; }
+    .lifeon-triplet li { display: flex; align-items: center; gap: .6rem; font-weight: 900; letter-spacing: -.035em; text-transform: uppercase; line-height: 1; font-size: clamp(1.9rem, 4.8vw, 3.4rem); color: var(--ink); }
+    .lifeon-triplet li::before { content: ""; flex: none; width: .4em; height: .4em; background: var(--yellow); border-radius: 2px; transform: rotate(45deg); }
+    .lifeon-body .lifeon-sign { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: 2rem; font-size: clamp(1.5rem, 3.6vw, 2.4rem); color: var(--ink); }
+    .lifeon-sign i { display: inline-block; width: .45em; height: .45em; background: var(--yellow); border-radius: 2px; transform: rotate(45deg); }
 
     /* ---------- Catalog ---------- */
     .catalog { padding: clamp(3rem, 7vw, 6rem) 0 clamp(3rem, 7vw, 6rem); }
@@ -449,7 +465,7 @@
   <!-- ============================== VIEW: HOME ============================== -->
   <div id="view-home">
 
-    <!-- Section 1: the note — an editorial letter, not an info block -->
+    <!-- Section 1: the note, an editorial letter, not an info block -->
     <section class="note" aria-labelledby="note-title">
       <div class="wrap note-grid">
         <div>
@@ -476,12 +492,33 @@
       <div class="ticker" id="ticker"><!-- filled by the script from TICKER_WORDS --></div>
     </section>
 
-    <!-- Section 2: the collection -->
+    <!-- Section 2: what LifeON is -->
+    <section class="lifeon" aria-labelledby="lifeon-heading">
+      <div class="wrap lifeon-grid">
+        <div>
+          <p class="label reveal">What is LifeON?</p>
+          <h2 id="lifeon-heading" class="h-serif lifeon-title reveal"><span class="brand-inline">Life<span class="brand-on">ON</span></span> is more than a <span class="mark">wearable</span> brand.</h2>
+        </div>
+        <div class="lifeon-body">
+          <p class="reveal">We create meaningful wearables inspired by messages, values, faith, and purpose. Things that are worth more than simply wearing.</p>
+          <p class="lifeon-carries reveal">Every design carries</p>
+          <ul class="lifeon-triplet reveal">
+            <li>A message.</li>
+            <li>A reminder.</li>
+            <li>A conversation.</li>
+          </ul>
+          <p class="reveal">Because we believe some things are not meant to stay only on a T-shirt. They are meant to be <span class="mark">lived</span>.</p>
+          <p class="h-grotesk lifeon-sign reveal">Wear It. <i aria-hidden="true"></i> Live It.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: the collection -->
     <section class="catalog" id="designs" aria-labelledby="catalog-heading">
       <div class="wrap">
         <div class="catalog-head">
           <div>
-            <p class="label reveal">Collection 01 — Market Study — 12 Designs</p>
+            <p class="label reveal">Collection 01 · Market Study · 12 Designs</p>
             <h2 id="catalog-heading" class="h-grotesk catalog-title reveal">The Collection <small>life you can wear</small></h2>
           </div>
           <div class="catalog-copy reveal">
@@ -525,7 +562,7 @@
         <section class="m-section">
           <div><p class="num">02</p><h2 class="h-serif">Our Mission</h2></div>
           <div class="m-body">
-            <p class="lead">To unite our hearts, hands, gifts, and resources to help build a permanent home for our church—a place that will serve Christ, strengthen His people, and enable us to continue doing God's work for generations to come.</p>
+            <p class="lead">To unite our hearts, hands, gifts, and resources to help build a permanent home for our church, a place that will serve Christ, strengthen His people, and enable us to continue doing God's work for generations to come.</p>
             <p>We believe that when God's people come together with a shared purpose, every gift, skill, relationship, and contribution can become part of something greater than ourselves.</p>
           </div>
         </section>
@@ -535,7 +572,7 @@
           <div class="m-body">
             <p class="lead">To see a Christ-centred and God-glorifying home established for our church, where generations of people can gather, grow in faith, serve one another, encounter God's love, and be equipped to reach others.</p>
             <p>Our vision is not simply to build a structure.</p>
-            <p>Our vision is to help establish a place that can become a home for people—a place where they can encounter Christ, find hope, grow in faith, and be equipped to serve others.</p>
+            <p>Our vision is to help establish a place that can become a home for people, a place where they can encounter Christ, find hope, grow in faith, and be equipped to serve others.</p>
             <p class="strong">We are building with <span class="mark">tomorrow</span> in mind.</p>
           </div>
         </section>
@@ -579,7 +616,7 @@
     </a>
     <div class="footer-row">
       <div>
-        <p>Project Build — Building for His glory</p>
+        <p>Project Build · Building for His glory</p>
       </div>
       <nav aria-label="Footer"><a href="#designs">Designs</a><a href="#mission">Our Mission</a></nav>
     </div>
