@@ -235,7 +235,7 @@
     .catalog-title small { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.02em; font-size: .42em; margin-top: .15em; }
     .catalog-copy p { margin: 0 0 .75rem; color: var(--ink-2); max-width: 30rem; }
     .catalog-copy .purpose { color: var(--ink); font-weight: 600; }
-    #designs, #home { scroll-margin-top: var(--bar); }
+    #designs, #lifeon, #home { scroll-margin-top: var(--bar); }
 
     .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
     @media (min-width: 640px)  { .grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
@@ -480,7 +480,7 @@
           <p class="note-close reveal">That is the <span class="mark">heart</span> behind Project Build.</p>
           <p class="note-bridge reveal"><span class="brand-inline">Life<span class="brand-on">ON</span></span> is a venture to raise support for Project Build: a permanent building for our church.</p>
           <div class="note-actions reveal">
-            <a class="btn btn-yellow" href="#designs">Browse the designs</a>
+            <a class="btn btn-yellow" href="#lifeon">Explore LifeON</a>
             <a class="btn btn-ghost" href="#mission">Know More About Our Mission</a>
           </div>
         </div>
@@ -493,7 +493,7 @@
     </section>
 
     <!-- Section 2: what LifeON is -->
-    <section class="lifeon" aria-labelledby="lifeon-heading">
+    <section class="lifeon" id="lifeon" aria-labelledby="lifeon-heading">
       <div class="wrap lifeon-grid">
         <div>
           <p class="label reveal">What is LifeON?</p>
@@ -705,7 +705,7 @@
 
   // ---------------------------------------------------------------------------
   // Views: home vs mission, switched by the URL hash so the Back button works.
-  // "#designs" shows the home view and scrolls to the collection.
+  // "#lifeon" and "#designs" show the home view and scroll to that section.
   // (The real app uses a separate /mission page.)
   // ---------------------------------------------------------------------------
   function showView() {
@@ -713,7 +713,7 @@
     const mission = hash === "#mission";
     document.getElementById("view-home").hidden = mission;
     document.getElementById("view-mission").hidden = !mission;
-    const target = !mission && hash === "#designs" ? document.getElementById("designs") : null;
+    const target = !mission && (hash === "#lifeon" || hash === "#designs") ? document.querySelector(hash) : null;
     if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
     revealAll();
   }
