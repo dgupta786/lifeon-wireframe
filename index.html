@@ -140,23 +140,92 @@
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--line);
     }
-    .topbar-inner { display: flex; align-items: center; justify-content: space-between; min-height: var(--bar); }
+    .topbar-inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;      /* phones: brand | links | search button */
+      align-items: center;
+      gap: .5rem .5rem;
+      min-height: var(--bar);
+      padding-top: .5rem;
+      padding-bottom: .5rem;
+    }
     .topbar .brand { font-size: 1.75rem; }
-    .topbar .brand-tag { font-size: .56rem; }
-    .topbar nav { display: flex; gap: .25rem; }
+    .topbar .brand-tag { font-size: .56rem; letter-spacing: .16em; }
+    .topbar nav { display: flex; gap: 1rem; justify-self: end; }
     .topbar nav a {
-      font-size: .88rem;
+      position: relative;
+      font-size: .86rem;
       font-weight: 700;
       text-decoration: none;
-      padding: .55rem .9rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      transition: border-color .15s, background .15s, color .15s;
+      padding: .5rem 0;
+      white-space: nowrap;
     }
-    .topbar nav a:hover { border-color: var(--ink); }
-    .topbar nav a.is-accent { border-color: var(--ink); }
-    .topbar nav a.is-accent:hover { background: var(--ink); color: var(--bg); }
-    @media (min-width: 640px) { .topbar .brand { font-size: 2rem; } .topbar .brand-tag { font-size: .62rem; } }
+    .topbar nav a::after {                       /* underline: slides in on hover, stays under the current tab */
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: .15rem;
+      height: 2px;
+      background: var(--ink);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .2s ease;
+    }
+    .topbar nav a:hover::after,
+    .topbar nav a:focus-visible::after,
+    .topbar nav a.is-active::after { transform: scaleX(1); }
+    @media (max-width: 399px) {                 /* small phones: keep the tagline on one line */
+      .topbar-inner { gap: .5rem .25rem; }
+      .topbar .brand-tag { font-size: .5rem; letter-spacing: .1em; white-space: nowrap; }
+      .topbar nav { gap: .75rem; }
+    }
+    @media (min-width: 640px) { .topbar .brand { font-size: 2rem; } .topbar .brand-tag { font-size: .62rem; letter-spacing: .22em; } }
+    @media (min-width: 900px) {
+      .topbar-inner { grid-template-columns: 1fr auto 1fr; gap: .5rem 1rem; }   /* desktop: links in the centre, search on the right */
+      .topbar nav { justify-self: center; gap: 2rem; }
+      .topbar nav a { font-size: .92rem; }
+    }
+
+    /* ---------- Collection toolbar: search + colour chips ---------- */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .search { position: relative; width: 100%; }
+    @media (min-width: 900px) { .search { width: 18rem; } }
+    .search svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .search-icon { position: absolute; left: 1rem; top: 50%; width: 16px; height: 16px; transform: translateY(-50%); color: var(--ink-2); pointer-events: none; }
+    .search input {
+      width: 100%;
+      min-height: 44px;
+      padding: .5rem 1rem .5rem 2.5rem;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      background: #FBFAF7;
+      color: var(--ink);
+      font: inherit;
+      font-size: .92rem;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .search input::placeholder { color: var(--ink-2); }
+    .search input:focus { border-color: var(--ink); outline: none; }
+    .search input::-webkit-search-cancel-button { display: none; }
+    .chips { display: flex; gap: .5rem; min-width: 0; overflow-x: auto; padding-bottom: .25rem; scrollbar-width: none; }   /* phones: swipe sideways */
+    .chips::-webkit-scrollbar { display: none; }
+    .chip-btn {
+      flex: none;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      background: #FBFAF7;
+      color: var(--ink);
+      font: inherit;
+      font-size: .84rem;
+      font-weight: 700;
+      padding: .5rem .95rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .chip-btn:hover { border-color: var(--ink); }
+    .chip-btn[aria-pressed="true"] { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
+    .search-empty { text-align: center; color: var(--ink-2); padding: 2rem 0 0; margin: 0; }
 
     /* ---------- Hero: the note (editorial letter) ---------- */
     .note { padding: clamp(2.25rem, 5vw, 4rem) 0 clamp(2.5rem, 6vw, 5rem); }
@@ -198,21 +267,18 @@
     .note-bridge { font-size: clamp(1.02rem, 1.3vw, 1.15rem); line-height: 1.5; color: var(--ink-2); max-width: 34rem; margin: 0 0 1.75rem; }
     .brand-inline { font-weight: 900; letter-spacing: -.04em; color: var(--ink); white-space: nowrap; }
     .brand-inline .brand-on { font-size: .92em; padding: .02em .22em .08em; }
-    .note-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
-    @media (max-width: 639px) { .note-actions .btn { width: 100%; } }
 
-    /* ---------- Ticker band: the statements are the imagery ---------- */
+    /* ---------- Dark panel ---------- */
     .dark { background: var(--ink); color: var(--bg); }
-    .ticker-band { padding: 1.35rem 0; overflow: hidden; border-top: 1px solid #2A2C33; border-bottom: 1px solid #2A2C33; }
-    .ticker { display: flex; width: max-content; animation: ticker 70s linear infinite; }
-    .ticker:hover { animation-play-state: paused; }
-    .ticker-group { display: flex; align-items: center; gap: 2.25rem; padding-right: 2.25rem; white-space: nowrap; }
-    .ticker-group span { font-weight: 900; letter-spacing: -.03em; text-transform: uppercase; font-size: clamp(1.4rem, 3.6vw, 2.4rem); line-height: 1; }
-    .ticker-group i { display: inline-block; width: .55em; height: .55em; background: var(--yellow); border-radius: 2px; transform: rotate(45deg); }
-    @keyframes ticker { to { transform: translateX(-50%); } }
 
     /* ---------- What is LifeON ---------- */
-    .lifeon { background: var(--bg-2); padding: clamp(3rem, 7vw, 6rem) 0; }
+    .lifeon {                                  /* the next sheet, sliding over the collection */
+      position: relative;
+      background: var(--bg);
+      border-radius: 28px 28px 0 0;
+      margin-top: -28px;
+      padding: clamp(3rem, 7vw, 6rem) 0;
+    }
     .lifeon-grid { display: grid; gap: 2rem; }
     @media (min-width: 900px) { .lifeon-grid { grid-template-columns: 5fr 7fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; } }
     .lifeon-title { font-size: clamp(2rem, 4.6vw, 3.6rem); line-height: 1.05; max-width: 14ch; }
@@ -227,15 +293,88 @@
     .lifeon-body .lifeon-sign { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: 2rem; font-size: clamp(1.5rem, 3.6vw, 2.4rem); color: var(--ink); }
     .lifeon-sign i { display: inline-block; width: .45em; height: .45em; background: var(--yellow); border-radius: 2px; transform: rotate(45deg); }
 
+    /* ---------- Hero ---------- */
+    .hero { padding: clamp(1.5rem, 4vw, 3.5rem) 0 clamp(2rem, 5vw, 3.5rem); }
+    .hero-grid { display: grid; gap: 1.75rem; align-items: center; }
+    .hero-photo { order: -1; }                 /* phones: photo first, then the words */
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 7fr 5fr; gap: clamp(2rem, 5vw, 4rem); } .hero-photo { order: 0; } }
+    .hero-lines {                              /* three statements; verbs outlined, nouns solid */
+      font-family: var(--sans);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -.04em;
+      line-height: .95;
+      font-size: clamp(2.6rem, 11vw, 3.4rem);  /* phones: verb sits above its noun */
+      margin: 0 0 1.25rem;
+    }
+    .hero-lines .line { display: block; }
+    .hero-lines .line + .line { margin-top: .35em; }
+    .hero-lines .hollow { display: block; }
+    @supports (-webkit-text-stroke: 1px black) {
+      .hero-lines .hollow { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+    }
+    @media (min-width: 640px) {
+      .hero-lines { font-size: clamp(2.4rem, 5vw, 4.4rem); }
+      .hero-lines .hollow { display: inline; -webkit-text-stroke-width: 2px; }
+      .hero-lines .line + .line { margin-top: .12em; }
+    }
+    .hero-sub { font-family: var(--serif); font-style: italic; font-size: clamp(1.15rem, 2vw, 1.5rem); letter-spacing: -.01em; color: var(--ink); margin: 0 0 1.5rem; }
+    .hero-photo { position: relative; margin: 0; }
+    .hero-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 40%; border-radius: var(--radius); }
+    .hero-sticker {                            /* brand sticker on the photo corner */
+      position: absolute;
+      left: -.6rem; bottom: 1.4rem;
+      display: inline-flex; align-items: center; gap: .45rem;
+      transform: rotate(-5deg);
+      background: var(--yellow);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      padding: .6rem .95rem;
+      border-radius: 999px;
+      box-shadow: 0 10px 24px -12px rgba(13, 14, 17, .5);
+    }
+    .hero-sticker i { width: .5em; height: .5em; background: var(--ink); border-radius: 2px; transform: rotate(45deg); }
+
     /* ---------- Catalog ---------- */
-    .catalog { padding: clamp(3rem, 7vw, 6rem) 0 clamp(3rem, 7vw, 6rem); }
-    .catalog-head { display: grid; gap: 1.25rem 3rem; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
-    @media (min-width: 900px) { .catalog-head { grid-template-columns: 7fr 5fr; align-items: end; } }
+    .catalog {                                 /* a linen sheet that slides up over the hero */
+      --pad-top: clamp(3rem, 6vw, 4.5rem);
+      position: relative;
+      background: var(--bg-2);
+      border-radius: 28px 28px 0 0;
+      padding: var(--pad-top) 0 clamp(4.5rem, 9vw, 7.5rem);
+    }
+    .catalog .wrap { position: relative; }
+    .catalog-tab {                             /* label tab straddling the sheet's top edge */
+      position: absolute;
+      top: calc(-1 * var(--pad-top) - .95rem);
+      left: clamp(1rem, 4vw, 3rem);
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin: 0;
+      background: var(--ink);
+      color: var(--yellow);
+      font-family: var(--mono);
+      font-size: .66rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: .55rem .9rem;
+      border-radius: 999px;
+      box-shadow: 0 10px 24px -14px rgba(13, 14, 17, .6);
+    }
+    .catalog-tab i { width: .5em; height: .5em; background: var(--yellow); border-radius: 2px; transform: rotate(45deg); }
+    .catalog-head { margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem); }
+    .catalog-tools { display: grid; gap: 1.1rem; margin-top: 1.25rem; }          /* phones: search above the chips */
+    @media (min-width: 900px) {
+      .catalog-tools { grid-template-columns: 1fr auto; align-items: center; gap: 1.5rem; }
+      .search { order: 2; }                                                     /* desktop: chips left, search right */
+    }
     .catalog-title { font-size: clamp(3rem, 12vw, 7rem); }
     .catalog-title small { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.02em; font-size: .42em; margin-top: .15em; }
-    .catalog-copy p { margin: 0 0 .75rem; color: var(--ink-2); max-width: 30rem; }
-    .catalog-copy .purpose { color: var(--ink); font-weight: 600; }
-    #designs, #lifeon, #home { scroll-margin-top: var(--bar); }
+    #designs, #home { scroll-margin-top: var(--bar); }
 
     .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
     @media (min-width: 640px)  { .grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
@@ -275,10 +414,22 @@
       transition: transform .3s;
     }
     @media (hover: hover) { .card:hover .tile .front { transform: scale(1.03); } }
-    .tile .idx { position: absolute; top: .75rem; left: .85rem; font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; opacity: .75; }
+    .tile .idx { position: absolute; z-index: 1; top: .75rem; left: .75rem; font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; color: var(--ink); background: rgba(243, 240, 233, .88); padding: .3rem .55rem; border-radius: 999px; }
+    .tile .img {                               /* front and back photos, cropped to the frame, chest area kept in view */
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 45%;
+      transition: opacity .35s ease;
+    }
+    .tile .img-back { opacity: 0; }
+    .tile[data-side="back"] .img-back { opacity: 1; }
     .tile .caption { position: absolute; bottom: .75rem; left: 0; right: 0; font-family: var(--mono); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; opacity: .7; }
     .side-toggle {                             /* Front | Back, shown only when a back exists */
       position: absolute;
+      z-index: 1;
       top: .6rem; right: .6rem;
       display: flex;
       padding: 2px;
@@ -313,29 +464,27 @@
     .card .note { font-size: .74rem; color: var(--ink-2); margin: 0; }
     .card .btn { margin-top: .25rem; min-height: 48px; }
 
-    /* ---------- Footer ---------- */
-    .footer { padding: clamp(2.5rem, 6vw, 4rem) 0 2.5rem; border-top: 1px solid var(--line); }
-    .footer .brand { font-size: clamp(4.5rem, 19vw, 13rem); }
-    .footer .brand-word { letter-spacing: -.06em; }
-    .footer .brand-tag { font-size: clamp(.8rem, 2.4vw, 1.2rem); letter-spacing: .28em; margin-top: .35rem; }
-    .footer-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
-    .footer-row p { margin: 0; font-size: .85rem; color: var(--ink-2); }
-    .footer-row nav a { font-size: .85rem; font-weight: 700; text-decoration: none; margin-right: 1.25rem; }
-    .dev-toggle { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); display: inline-flex; gap: .4rem; align-items: center; margin-top: 1.5rem; opacity: .7; }
-
     /* ---------- Mission view ---------- */
     .mission { padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(3rem, 7vw, 6rem); }
-    .mission-head { max-width: 60rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
-    .mission-kicker { font-size: clamp(2.5rem, 5vw, 3.8rem); color: var(--ink); margin: 0 0 .9rem; }
+    .mission .note { padding-top: 0; }
     .backlink { display: inline-block; font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; padding: .55rem .9rem; border: 1px solid var(--ink); border-radius: 999px; margin-bottom: 2rem; }
     .backlink:hover { background: var(--ink); color: var(--bg); }
     .m-section { display: grid; gap: 1rem; padding: clamp(2rem, 5vw, 3.5rem) 0; border-top: 1px solid var(--line); }
     @media (min-width: 900px) { .m-section { grid-template-columns: 4fr 8fr; gap: 3rem; } }
     .m-section h2 { font-size: clamp(2rem, 4.6vw, 3rem); }
-    .m-section .num { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; color: var(--ink-2); margin: 0 0 .75rem; }
     .m-body p { color: var(--ink-2); max-width: 40rem; }
     .m-body .lead { font-family: var(--serif); font-style: italic; font-size: clamp(1.45rem, 2.6vw, 1.9rem); line-height: 1.22; letter-spacing: -.015em; color: var(--ink); max-width: 30ch; margin-bottom: 1.25rem; }
     .m-body .strong { color: var(--ink); font-weight: 600; }
+
+    /* ---------- Mission · Vision · Goal pillars ---------- */
+    .pillars { display: grid; gap: .75rem; padding: clamp(2rem, 5vw, 3.5rem) 0; border-top: 1px solid var(--line); }
+    @media (min-width: 900px) { .pillars { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
+    .pillar { border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.25rem, 2.5vw, 1.75rem); background: #FBFAF7; display: flex; flex-direction: column; }
+    .pillar-title { font-size: clamp(1.4rem, 2vw, 1.7rem); margin: 0 0 .9rem; }
+    .pillar p:last-child { margin: 0; font-size: 1rem; line-height: 1.6; color: var(--ink); }
+    .pillar.ink { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+    .pillar.ink p:last-child { color: var(--bg); }
+    .pillar.ink .mark { background: none; color: var(--yellow); padding: 0; }
     .dream { list-style: none; padding: 0; margin: .25rem 0 1.25rem; display: grid; gap: .6rem; }
     @media (min-width: 640px) { .dream { grid-template-columns: 1fr 1fr; } }
     .dream li { border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem .9rem 1rem; background: #FBFAF7; font-weight: 600; letter-spacing: -.01em; }
@@ -430,8 +579,6 @@
     .choice:has(input:checked), .choice.is-checked { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
     .error { color: var(--danger); font-size: .85rem; margin: .5rem 0 0; }
     .actions { display: grid; gap: .5rem; margin-top: .5rem; }
-    .status { margin: .75rem 0 0; font-size: .9rem; min-height: 1.4em; text-align: center; }
-    .status.err { color: var(--danger); }
     .thanks { text-align: center; padding: 1.5rem 0 .5rem; }
     .thanks-mark { width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%; background: var(--yellow); color: var(--ink); display: grid; place-items: center; font-size: 1.6rem; font-weight: 900; }
     .thanks-title { font-family: var(--serif); font-style: italic; font-size: 1.7rem; line-height: 1.15; margin: 0 0 .5rem; letter-spacing: -.02em; }
@@ -454,7 +601,7 @@
       <span class="brand-tag">Wear It. Live It.</span>
     </a>
     <nav aria-label="Primary">
-      <a href="#designs" class="is-accent">Designs</a>
+      <a href="#home">Collection</a>
       <a href="#mission">Our Mission</a>
     </nav>
   </div>
@@ -465,34 +612,45 @@
   <!-- ============================== VIEW: HOME ============================== -->
   <div id="view-home">
 
-    <!-- Section 1: the note, an editorial letter, not an info block -->
-    <section class="note" aria-labelledby="note-title">
-      <div class="wrap note-grid">
-        <div>
-          <h1 id="note-title" class="h-serif note-title">
-            <span class="line rise d1">Project</span>
-            <span class="line rise d2"><span class="mark sweep">Build</span></span>
+    <!-- Section 1: hero, the three lines beside the image-of-God photo -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1 id="hero-heading" class="hero-lines">
+            <span class="line rise d1"><span class="hollow">Wear the</span> Message.</span>
+            <span class="line rise d2"><span class="hollow">Live the</span> Truth.</span>
+            <span class="line rise d3"><span class="hollow">Carry the</span> Word.</span>
           </h1>
+          <p class="hero-sub reveal">Made to be worn. Meant to be lived.</p>
         </div>
-        <div class="note-body">
-          <p class="reveal">Today, our church gathers and carries out its ministries from rented spaces. While we are grateful for every place God has provided for us, rented spaces come with uncertainty. Rent, availability, and other circumstances can change over time, making it difficult to plan and build for the future with confidence.</p>
-          <p class="reveal">As our church continues to grow, so does the need for a permanent place, a building where we can gather, worship, grow together, serve one another, and continue the work God has called us to do.</p>
-          <p class="note-close reveal">That is the <span class="mark">heart</span> behind Project Build.</p>
-          <p class="note-bridge reveal"><span class="brand-inline">Life<span class="brand-on">ON</span></span> is a venture to raise support for Project Build: a permanent building for our church.</p>
-          <div class="note-actions reveal">
-            <a class="btn btn-yellow" href="#lifeon">Explore LifeON</a>
-            <a class="btn btn-ghost" href="#mission">Know More About Our Mission</a>
-          </div>
-        </div>
+        <figure class="hero-photo reveal">
+          <img src="images/hero-image-of-god.png" alt="Back of a white LifeON T-shirt printed with Made in the image of God" width="616" height="707">
+          <span class="hero-sticker" aria-hidden="true">Wear It. <i></i> Live It.</span>
+        </figure>
       </div>
     </section>
 
-    <!-- Section transition: the statements as a moving band -->
-    <section class="dark ticker-band" aria-label="LifeON statements">
-      <div class="ticker" id="ticker"><!-- filled by the script from TICKER_WORDS --></div>
+    <!-- Section 2: the collection -->
+    <section class="catalog" id="designs" aria-labelledby="catalog-heading">
+      <div class="wrap">
+        <p class="catalog-tab">Collection <i aria-hidden="true"></i> <span id="catalog-count">08</span> designs</p>
+        <div class="catalog-head">
+          <h2 id="catalog-heading" class="h-grotesk catalog-title reveal">The Collection <small>life you can wear</small></h2>
+          <div class="catalog-tools reveal">
+            <form class="search" id="search-form" role="search">
+              <label class="sr-only" for="search-input">Search designs</label>
+              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>
+              <input type="search" id="search-input" placeholder="Search designs" autocomplete="off" spellcheck="false">
+            </form>
+            <div class="chips" id="colour-chips" role="group" aria-label="Filter by colour"><!-- chips are rendered by the script below --></div>
+          </div>
+        </div>
+        <div class="grid" id="catalog-grid"><!-- cards are rendered by the script below --></div>
+        <p class="search-empty" id="search-empty" hidden>No designs match your search.</p>
+      </div>
     </section>
 
-    <!-- Section 2: what LifeON is -->
+    <!-- Section 3: what LifeON is -->
     <section class="lifeon" id="lifeon" aria-labelledby="lifeon-heading">
       <div class="wrap lifeon-grid">
         <div>
@@ -512,36 +670,36 @@
         </div>
       </div>
     </section>
-
-    <!-- Section 3: the collection -->
-    <section class="catalog" id="designs" aria-labelledby="catalog-heading">
-      <div class="wrap">
-        <div class="catalog-head">
-          <div>
-            <p class="label reveal">Collection 01 · Market Study · 12 Designs</p>
-            <h2 id="catalog-heading" class="h-grotesk catalog-title reveal">The Collection <small>life you can wear</small></h2>
-          </div>
-          <div class="catalog-copy reveal">
-            <p class="purpose">Every LifeON tee supports Project Build. All profits go towards building a home for our church.</p>
-            <p>Nothing is on sale yet. Tap “Share Your Preference” on any design you have an opinion about; you can respond to as many designs as you like.</p>
-          </div>
-        </div>
-        <div class="grid" id="catalog-grid"><!-- cards are rendered by the script below --></div>
-      </div>
-    </section>
   </div>
 
   <!-- ============================== VIEW: MISSION ============================== -->
   <div id="view-mission" hidden>
     <article class="mission">
       <div class="wrap">
-        <a class="backlink" href="#home">← Back to the designs</a>
-        <div class="mission-head">
-          <h1 class="h-serif mission-kicker">Project <span class="mark">Build</span></h1>
-        </div>
+        <a class="backlink" href="#home">← Back to the collection</a>
+      </div>
 
+      <!-- The Project Build note, an editorial letter -->
+      <section class="note" aria-labelledby="note-title">
+        <div class="wrap note-grid">
+          <div>
+            <h1 id="note-title" class="h-serif note-title">
+              <span class="line rise d1">Project</span>
+              <span class="line rise d2"><span class="mark sweep">Build</span></span>
+            </h1>
+          </div>
+          <div class="note-body">
+            <p class="reveal">Today, our church gathers and carries out its ministries from rented spaces. While we are grateful for every place God has provided for us, rented spaces come with uncertainty. Rent, availability, and other circumstances can change over time, making it difficult to plan and build for the future with confidence.</p>
+            <p class="reveal">As our church continues to grow, so does the need for a permanent place, a building where we can gather, worship, grow together, serve one another, and continue the work God has called us to do.</p>
+            <p class="note-close reveal">That is the <span class="mark">heart</span> behind Project Build.</p>
+            <p class="note-bridge reveal"><span class="brand-inline">Life<span class="brand-on">ON</span></span> is a venture to raise support for Project Build: a permanent building for our church.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="wrap">
         <section class="m-section">
-          <div><p class="num">01</p><h2 class="h-serif">Why Project Build?</h2></div>
+          <div><h2 class="h-serif">Why Project Build?</h2></div>
           <div class="m-body">
             <p class="lead">A church is not defined by a building. The Church is God's people.</p>
             <p>But a permanent building can provide a foundation from which the Church can continue to serve, grow, and reach people for generations to come.</p>
@@ -559,37 +717,18 @@
           </div>
         </section>
 
-        <section class="m-section">
-          <div><p class="num">02</p><h2 class="h-serif">Our Mission</h2></div>
-          <div class="m-body">
-            <p class="lead">To unite our hearts, hands, gifts, and resources to help build a permanent home for our church, a place that will serve Christ, strengthen His people, and enable us to continue doing God's work for generations to come.</p>
-            <p>We believe that when God's people come together with a shared purpose, every gift, skill, relationship, and contribution can become part of something greater than ourselves.</p>
+        <section class="pillars" aria-label="Our mission, vision and goal">
+          <div class="pillar">
+            <h2 class="h-grotesk pillar-title">Our Mission</h2>
+            <p>To unite our hearts, hands, gifts, and resources to help build a <span class="mark">permanent home</span> for our church, a place that will serve Christ, strengthen His people, and enable us to continue doing God's work for generations to come.</p>
           </div>
-        </section>
-
-        <section class="m-section">
-          <div><p class="num">03</p><h2 class="h-serif">Our Vision</h2></div>
-          <div class="m-body">
-            <p class="lead">To see a Christ-centred and God-glorifying home established for our church, where generations of people can gather, grow in faith, serve one another, encounter God's love, and be equipped to reach others.</p>
-            <p>Our vision is not simply to build a structure.</p>
-            <p>Our vision is to help establish a place that can become a home for people, a place where they can encounter Christ, find hope, grow in faith, and be equipped to serve others.</p>
-            <p class="strong">We are building with <span class="mark">tomorrow</span> in mind.</p>
+          <div class="pillar ink">
+            <h2 class="h-grotesk pillar-title">Our Vision</h2>
+            <p>To see a <span class="mark">Christ-centred and God-glorifying home</span> established for our church, where generations of people can gather, grow in faith, serve one another, encounter God's love, and be equipped to reach others.</p>
           </div>
-        </section>
-
-        <section class="m-section">
-          <div><p class="num">04</p><h2 class="h-serif">Our Goal</h2></div>
-          <div class="m-body">
-            <p class="lead">To raise meaningful and sustainable financial support for Project Build by pursuing opportunities and initiatives that enable us to contribute towards building a permanent home for our church.</p>
-          </div>
-        </section>
-
-        <section class="m-section">
-          <div><p class="num">05</p><h2 class="h-serif">Be Part of the Journey</h2></div>
-          <div class="m-body">
-            <p class="lead">It is about God's people coming together.</p>
-            <p>Whether through your time, skills, creativity, relationships, resources, ideas, or financial support, there is an opportunity for each of us to play a part.</p>
-            <p>Together, we can take a step towards building a permanent home that will serve Christ, strengthen His people, and create opportunities for God's work to continue for years to come.</p>
+          <div class="pillar">
+            <h2 class="h-grotesk pillar-title">Our Goal</h2>
+            <p>To raise <span class="mark">meaningful and sustainable</span> financial support for Project Build by pursuing opportunities and initiatives that enable us to contribute towards building a permanent home for our church.</p>
           </div>
         </section>
 
@@ -602,27 +741,11 @@
           <p class="end">Because ultimately, unless the Lord builds the house, our efforts are in vain.</p>
         </section>
 
-        <p style="margin-top:2rem"><a class="backlink" href="#home">← Back to the designs</a></p>
+        <p style="margin-top:2rem"><a class="backlink" href="#home">← Back to the collection</a></p>
       </div>
     </article>
   </div>
 </main>
-
-<footer class="footer">
-  <div class="wrap">
-    <a class="brand" href="#home" aria-label="LifeON. Wear It. Live It.">
-      <span class="brand-word">Life<span class="brand-on">ON</span></span>
-      <span class="brand-tag">Wear It. Live It.</span>
-    </a>
-    <div class="footer-row">
-      <div>
-        <p>Project Build · Building for His glory</p>
-      </div>
-      <nav aria-label="Footer"><a href="#designs">Designs</a><a href="#mission">Our Mission</a></nav>
-    </div>
-    <label class="dev-toggle"><input type="checkbox" id="simulate-fail"> Wireframe only: simulate a save failure</label>
-  </div>
-</footer>
 
 <!-- ============================== PREFERENCE SHEET ============================== -->
 <dialog id="pref-dialog" class="sheet" aria-labelledby="dialog-title">
@@ -667,7 +790,6 @@
         <button type="submit" class="btn btn-yellow btn-block" id="submit-btn">Submit</button>
         <button type="button" class="btn btn-text" id="cancel-btn">Cancel</button>
       </div>
-      <p class="status" id="form-status" aria-live="polite"></p>
     </form>
 
     <div id="thanks" class="thanks" hidden>
@@ -682,30 +804,26 @@
 <script>
   // ---------------------------------------------------------------------------
   // Sample catalog. Mirrors the future data/designs.ts (id, name, front, back,
-  // reference, colours, price, images). The first 12 designs from the brief.
+  // reference, colours, price, images). Each entry lists its front and back photo in wireframe/images/.
   // ---------------------------------------------------------------------------
   const PRICE_NOTE = "Final price will be confirmed after the market study.";
   const designs = [
-    { id: "lights-on",            name: "Lights On",            front: "LIGHTS ON.",                back: "You are the light of the world.",               reference: "Matthew 5:14" },
-    { id: "closed-doors",         name: "Closed Doors",         front: "CLOSED DOORS",              back: "≠ WRONG TURN.",                                 reference: "Proverbs 3:5–6" },
-    { id: "divinely-unavailable", name: "Divinely Unavailable", front: "DIVINELY UNAVAILABLE.",     back: "what isn't meant for me doesn't get to define me.", reference: "Romans 8:28" },
-    { id: "protected",            name: "Protected",            front: "PROTECTED.",                back: "NOT LUCKY.",                                    reference: "Psalm 121" },
-    { id: "heart-over-hype",      name: "Heart > Hype",         front: "HEART > HYPE.",             back: "Guard your heart.",                             reference: "Proverbs 4:23" },
-    { id: "pray-first",           name: "Pray First",           front: "PRAY FIRST.",               back: "PANIC LATER.",                                  reference: "Philippians 4:6" },
-    { id: "under-construction",   name: "Under Construction",   front: "UNDER CONSTRUCTION.",       back: "God isn't finished with me yet.",               reference: "Philippians 1:6" },
-    { id: "divine-timing",        name: "Divine Timing",        front: "DIVINE TIMING",             back: "is still timing.",                              reference: "Ecclesiastes 3:11" },
-    { id: "loved",                name: "Loved",                front: "LOVED.",                    back: "no application required.",                      reference: "Romans 5:8" },
-    { id: "the-cross",            name: "The Cross",            front: "THE CROSS",                 back: "CHANGED THE PLOT.",                             reference: "Luke 23–24" },
-    { id: "still-connected",      name: "Still Connected",      front: "NO SIGNAL.",                back: "STILL CONNECTED.",                              reference: "John 15:4" },
-    { id: "plot-twist",           name: "Plot Twist",           front: "GRACE IS MY PLOT TWIST.",   back: "",                                              reference: "Ephesians 2:8" },
-  ].map(d => ({ ...d, colours: [], price: "Approx. ₹550", images: [] }));
+    { id: "lights-on",       name: "Lights On",       front: "You are the light of the world.",           back: "LIGHTS ON.",                              reference: "Matthew 5:14",     colours: ["Brown"],      images: ["images/lights-on-front.png", "images/lights-on-back.png"] },
+    { id: "i-prayed",        name: "I Prayed",        front: "I PRAYED.",                                 back: "THEN I LET GO.",                          reference: "1 Peter 5:7",      colours: ["Navy"],       images: ["images/i-prayed-front.png", "images/i-prayed-back.png"] },
+    { id: "still-connected", name: "Still Connected", front: "NO SIGNAL.",                                back: "STILL CONNECTED.",                        reference: "John 15:4",        colours: ["Black"],      images: ["images/still-connected-front.png", "images/still-connected-back.png"] },
+    { id: "plot-twist",      name: "Plot Twist",      front: "GRACE.",                                    back: "my favourite plot twist.",                reference: "Ephesians 2:8",    colours: ["Olive"],      images: ["images/plot-twist-front.png", "images/plot-twist-back.png"] },
+    { id: "unbothered",      name: "Unbothered",      front: "UNBOTHERED. because He said “Be still.”",   back: "",                                        reference: "Psalm 46:10",      colours: ["Dark olive"], images: ["images/unbothered-front.png", "images/unbothered-back.png"] },
+    { id: "still-here",      name: "Still. Here.",    front: "STILL. HERE.",                              back: "when everything gets loud, He remains.",  reference: "Psalm 46:10",      colours: ["Black"],      images: ["images/still-here-front.png", "images/still-here-back.png"] },
+    { id: "known",           name: "Known",           front: "KNOWN.",                                    back: "before you were seen, you were known.",   reference: "Psalm 139",        colours: ["Off-white"],  images: ["images/known-front.png", "images/known-back.png"] },
+    { id: "i-can",           name: "I Can",           front: "I CAN. through Christ who strengthens me.", back: "STRENGTHENED.",                           reference: "Philippians 4:13", colours: ["Blue"],       images: ["images/i-can-front.png", "images/i-can-back.png"] },
+  ].map(d => ({ ...d, price: "Approx. ₹550" }));
 
   // Placeholder tile colours give the grid rhythm until real product images arrive.
   const TILE_TONE = i => ([2, 7].includes(i) ? "ink" : [4, 10].includes(i) ? "yellow" : "");
 
   // ---------------------------------------------------------------------------
   // Views: home vs mission, switched by the URL hash so the Back button works.
-  // "#lifeon" and "#designs" show the home view and scroll to that section.
+  // Any other hash shows the collection view from the top.
   // (The real app uses a separate /mission page.)
   // ---------------------------------------------------------------------------
   function showView() {
@@ -713,37 +831,34 @@
     const mission = hash === "#mission";
     document.getElementById("view-home").hidden = mission;
     document.getElementById("view-mission").hidden = !mission;
-    const target = !mission && (hash === "#lifeon" || hash === "#designs") ? document.querySelector(hash) : null;
-    if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
+    document.querySelectorAll(".topbar nav a").forEach(a => {          // underline the tab we are on
+      const active = (a.getAttribute("href") === "#mission") === mission;
+      a.classList.toggle("is-active", active);
+      if (active) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    window.scrollTo(0, 0);
     revealAll();
   }
   window.addEventListener("hashchange", showView);
 
   // ---------------------------------------------------------------------------
-  // Ticker band: the LifeON word list, twice, for a seamless loop (edit TICKER_WORDS)
-  // ---------------------------------------------------------------------------
-  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const TICKER_WORDS = [
-    "LIFE ON", "SPEAK LIFE", "FULLY ALIVE", "PRAY FIRST", "MADE FOR MORE", "STILL GROWING", "FAITH OVER FEAR",
-    "HEART > HYPE", "LOVED", "PURPOSE OVER PRESSURE", "TRUST THE PROCESS", "DIVINE TIMING", "GRACE FOUND ME",
-  ];
-  const tickerItems = TICKER_WORDS.map(w => `<span>${esc(w)}</span><i aria-hidden="true"></i>`).join("");
-  document.getElementById("ticker").innerHTML =
-    `<div class="ticker-group">${tickerItems}</div><div class="ticker-group" aria-hidden="true">${tickerItems}</div>`;
-
-  // ---------------------------------------------------------------------------
   // Catalog cards
   // ---------------------------------------------------------------------------
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const grid = document.getElementById("catalog-grid");
   designs.forEach((d, i) => {
     const card = document.createElement("article");
     card.className = "card reveal";
+    card.dataset.search = [d.name, d.front, d.back, d.reference].join(" ").toLowerCase();
+    card.dataset.colours = d.colours.join("|");
     card.innerHTML = `
-      <div class="tile ${TILE_TONE(i)}" aria-label="${esc(d.name)} T-shirt image placeholder">
-        <span class="idx">${String(i + 1).padStart(2, "0")} / ${designs.length}</span>
+      <div class="tile ${TILE_TONE(i)}" data-side="front">
+        <span class="idx">${String(i + 1).padStart(2, "0")} / ${String(designs.length).padStart(2, "0")}</span>
         <div class="front">${esc(d.front)}</div>
         <div class="caption">Image coming soon</div>
-        ${d.back ? `
+        ${d.images[0] ? `<img class="img img-front" src="${esc(d.images[0])}" alt="${esc(d.name)} T-shirt, front" loading="lazy" onerror="this.remove()">` : ""}
+        ${d.images[1] ? `<img class="img img-back" src="${esc(d.images[1])}" alt="${esc(d.name)} T-shirt, back" loading="lazy" onerror="this.remove()">` : ""}
+        ${d.back || d.images[1] ? `
         <div class="side-toggle" aria-label="Choose image side">
           <button type="button" data-side="front" aria-pressed="true">Front</button>
           <button type="button" data-side="back" aria-pressed="false">Back</button>
@@ -768,7 +883,8 @@
     card.querySelectorAll(".side-toggle button").forEach(btn => {
       btn.addEventListener("click", () => {
         card.querySelectorAll(".side-toggle button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
-        card.querySelector(".tile .front").textContent = btn.dataset.side === "back" ? d.back : d.front;
+        card.querySelector(".tile").dataset.side = btn.dataset.side;                                   // swaps the photo
+        card.querySelector(".tile .front").textContent = btn.dataset.side === "back" ? (d.back || "Plain back") : d.front;   // placeholder text
       });
     });
 
@@ -796,13 +912,55 @@
   showView();
 
   // ---------------------------------------------------------------------------
+  // Collection toolbar: the search box and the colour chips filter the cards together
+  // ---------------------------------------------------------------------------
+  const searchForm  = document.getElementById("search-form");
+  const searchInput = document.getElementById("search-input");
+  const searchEmpty = document.getElementById("search-empty");
+  const chips       = document.getElementById("colour-chips");
+  let activeColour  = "all";
+
+  ["all", ...new Set(designs.flatMap(d => d.colours))].forEach(colour => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip-btn";
+    chip.textContent = colour === "all" ? "All" : colour;
+    chip.setAttribute("aria-pressed", String(colour === "all"));
+    chip.addEventListener("click", () => {
+      activeColour = colour;
+      chips.querySelectorAll(".chip-btn").forEach(c => c.setAttribute("aria-pressed", String(c === chip)));
+      applyFilters();
+    });
+    chips.appendChild(chip);
+  });
+
+  function applyFilters() {
+    const q = searchInput.value.trim().toLowerCase();
+    let shown = 0;
+    grid.querySelectorAll(".card").forEach(card => {
+      const matchesText   = !q || card.dataset.search.includes(q);
+      const matchesColour = activeColour === "all" || card.dataset.colours.split("|").includes(activeColour);
+      const hit = matchesText && matchesColour;
+      card.hidden = !hit;
+      if (hit) shown++;
+    });
+    searchEmpty.textContent = q
+      ? `No designs match “${searchInput.value.trim()}”${activeColour === "all" ? "" : " in " + activeColour}.`
+      : `No ${activeColour} designs yet.`;
+    searchEmpty.hidden = shown > 0;
+    revealAll();
+  }
+  searchInput.addEventListener("input", applyFilters);
+  searchForm.addEventListener("submit", e => { e.preventDefault(); applyFilters(); });
+  document.getElementById("catalog-count").textContent = String(designs.length).padStart(2, "0");
+
+  // ---------------------------------------------------------------------------
   // Preference sheet (native <dialog>: Esc closes it, focus is trapped inside)
   // ---------------------------------------------------------------------------
   const dialog    = document.getElementById("pref-dialog");
   const body      = document.getElementById("dialog-body");
   const form      = document.getElementById("pref-form");
   const thanks    = document.getElementById("thanks");
-  const status    = document.getElementById("form-status");
   const errLikes  = document.getElementById("err-likes");
   const errBuy    = document.getElementById("err-buy");
   const submitBtn = document.getElementById("submit-btn");
@@ -819,8 +977,6 @@
     form.querySelectorAll(".choice").forEach(c => c.classList.remove("is-checked"));
     errLikes.hidden = true;
     errBuy.hidden = true;
-    status.textContent = "";
-    status.classList.remove("err");
     submitBtn.disabled = false;
     submitBtn.textContent = "Submit";
     form.hidden = false;
@@ -852,18 +1008,10 @@
 
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting…";
-    status.textContent = "";
-    status.classList.remove("err");
 
-    // Simulated save. The real app POSTs { designId, name, likesDesign, buyIntent } to /api/responses.
+    // Simulated save. The real app POSTs { designId, name, likesDesign, buyIntent } to /api/responses
+    // and shows "Something went wrong, please try again." if that fails.
     setTimeout(() => {
-      if (document.getElementById("simulate-fail").checked) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit";
-        status.textContent = "Something went wrong, please try again.";
-        status.classList.add("err");
-        return;                                     // form stays open with the values intact
-      }
       form.hidden = true;
       thanks.hidden = false;
       document.getElementById("done-btn").focus();
