@@ -311,11 +311,11 @@
     .hero-lines .line + .line { margin-top: .35em; }
     .hero-lines .hollow { display: block; }
     @supports (-webkit-text-stroke: 1px black) {
-      .hero-lines .hollow { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+      .hero-lines .hollow { color: var(--bg); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; }   /* fill painted over the stroke hides inner contour lines on phone fonts */
     }
     @media (min-width: 640px) {
       .hero-lines { font-size: clamp(2.4rem, 5vw, 4.4rem); }
-      .hero-lines .hollow { display: inline; -webkit-text-stroke-width: 2px; }
+      .hero-lines .hollow { display: inline; -webkit-text-stroke-width: 4px; }
       .hero-lines .line + .line { margin-top: .12em; }
     }
     .hero-sub { font-family: var(--serif); font-style: italic; font-size: clamp(1.15rem, 2vw, 1.5rem); letter-spacing: -.01em; color: var(--ink); margin: 0 0 1.5rem; }
